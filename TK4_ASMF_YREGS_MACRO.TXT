@@ -1,0 +1,23 @@
+000001          MACRO       
+000002          YREGS &DUMMY
+000003          GBLA  &REGS 
+000004 &REGS    SETA  1     
+000005          SPACE 1     
+000006 R0       EQU   0     
+000007 R1       EQU   1     
+000008 R2       EQU   2     
+000009 R3       EQU   3     
+000010 R4       EQU   4     
+000011 R5       EQU   5     
+000012 R6       EQU   6     
+000013 R7       EQU   7     
+000014 R8       EQU   8     
+000015 R9       EQU   9     
+000016 R10      EQU   10    
+000017 R11      EQU   11    
+000018 R12      EQU   12    
+000019 R13      EQU   13    
+000020 R14      EQU   14    
+000021 R15      EQU   15    
+000022          SPACE 1     
+000023          MEND        

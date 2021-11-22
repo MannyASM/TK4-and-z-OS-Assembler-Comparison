@@ -1,0 +1,118 @@
+//Z01427C   JOB TESTASMF,'Z01427-SNAP',
+//       MSGCLASS=H,
+//       CLASS=H,
+//       NOTIFY=&SYSUID
+//*----------------------------------------------------------------   
+//* CLEAR OUTPUT FILES                                                
+//*----------------------------------------------------------------   
+//*EL     EXEC PGM=IEFBR14                                            
+//*D1     DD DISP=(OLD,DELETE,DELETE),DSN=HERC01.TEST.ASMFLIST        
+//*D2     DD DISP=(OLD,DELETE,DELETE),DSN=HERC01.TEST.SNAPOUT         
+//*                                                                   
+//*----------------------------------------------------------------   
+//* ASSEMBLE, LINK AND GO                                             
+//*----------------------------------------------------------------   
+//TESTASM EXEC HLASMCLG                                                
+//*C.SYSPRINT DD DSN=Z01427.TEST.ASMFLIST,      
+//*            DISP=(NEW,CATLG,DELETE),
+//*            UNIT=SYSDA,SPACE=(TRK,(1,1,1),RLSE),                   
+//*            DCB=BLKSIZE=1089                                       
+//*                                                                   
+//SYSIN DD *                                                          
+         TITLE 'ADD2-TEST SNAP IN Z/OS 2.04'                                   
+         PRINT ON,DATA,GEN                                            
+ADD2     CSECT                                                        
+         STM   R14,R12,12(R13)            SAVE REGISTERS           
+         BASR  R12,R0                                                
+         USING *,R12                      DEFINE R12 AS BASE REG   
+         ST    R13,SAVEA+4                                            
+         LA    R13,SAVEA                                              
+* -----------------------------------------------------------------    
+         WTO   'BEFORE THE ADD/SNAP',ROUTCDE=(1)                      
+                                                                      
+         L     R4,WORD1                                               
+         L     R5,WORD2                                               
+         AR    R4,R5                                                  
+         ST    R4,WORD3                                               
+                                                                       
+         OPEN  (SNAPDUMP,OUTPUT)                                       
+         LA    R3,SNAPDUMP                                             
+                                                                        
+* -----------------------------------------------------------------    
+* SNAP PARMS                                                           
+* ----------                                                           
+* PDATA   ALL,PSW,REGS,SA,SAH,JPA,LPA,ALLPA,SPLS,SUBTASKS              
+* SDATA:  ALL,NUC,SQA,LSQA,PCDATA,SWA,CB,Q,TRT,DM,ERR,IO,ALLVNUC,SUM   
+* STORAGE START-ADDR,END-ADDR (A-TYPE ADDRESS)                         
+* STRHDR  HDR ADDRESS (A-TYPE ADDRESS)                                 
+* -----------------------------------------------------------------    
+                                                                        
+* PROGRAM CALL DATA                                                    
+* -----------------                                                    
+*        SNAP  DCB=(R3),ID=1111,PDATA=ALL                              
+*        SNAP  DCB=(R3),ID=1111,PDATA=PSW                              
+*        SNAP  DCB=(R3),ID=1111,PDATA=SUBTASKS                         
+*        SNAP  DCB=(R3),ID=1111,PDATA=(PSW,REGS)                       
+                                                                        
+* SYSTEM CONTROL DATA                                                  
+* -------------------                                                  
+*        SNAP  DCB=(R3),ID=1111,SDATA=ALL                              
+*        SNAP  DCB=(R3),ID=1111,SDATA=SUM                              
+*        SNAP  DCB=(R3),ID=1111,SDATA=(SUM,PCDATA)                     
+                                                                        
+* SYSTEM CONTROL DATA                                                  
+* -------------------                                                  
+         LA    R5,WORD3                   PREP 2 REGS TO USE WITH SNAP 
+         LA    R6,END1                                                 
+                                                                        
+*        SNAP  DCB=(R3),ID=1111,STORAGE=(R5,R6),STRHDR=HDR1            
+         SNAP  DCB=(R3),ID=1111,STORAGE=(WORD3,END1),STRHDR=HDR1       
+*        SNAP  DCB=(R3),ID=1111,STORAGE=(WORD3,WORD3+4),STRHDR=HDR2    
+         SNAP  DCB=(R3),ID=1111,STORAGE=(ADD2,LASTFLD),STRHDR=HDR2     
+*        SNAP  DCB=(R3),ID=1111,STORAGE=(R5,R6),STRHDR=HDR1            
+                                                                        
+* -----------------------------------------------------------------    
+                                                                         
+         CLOSE SNAPDUMP                                                 
+                                                                         
+         WTO   'AFTER THE SNAP',ROUTCDE=(1)  SEND MSG TO CONSOLE        
+* -----------------------------------------------------------------     
+         L     R13,SAVEA+4                   PREP TO EXIT               
+         LM    R14,R12,12(R13)               RESTORE REGS               
+         SR    R15,0                         ZERO OUT RETURN CODE       
+         BR    R14                                                      
+* -----------------------------------------------------------------     
+SAVEA    DS    18F                                                      
+                                                                         
+         YREGS                               REGISTER EQUATES           
+                                                                         
+SNAPDUMP DCB   DSORG=PS,                                               X
+               MACRF=(W),                                              X
+               DEVD=VPWRKD,                                            X
+               DDNAME=SNAPDUMP,                                        X
+               RECFM=VBA,                                              X
+               LRECL=125,                                              X
+               BLKSIZE=882                                              
+                                                                         
+WORD1    DC    F'4'                                                     
+WORD2    DC    F'6'                                                     
+                                                                         
+BEG1     EQU   *                                                        
+WORD3    DS    F                                                        
+END1     EQU   *                                                        
+                                                                         
+HDR1     DC    AL1(L'HDR1TXT)                                           
+HDR1TXT  DC    C'<<< WORD3...END1 STORAGE >>>'                          
+                                                                         
+HDR2     DC    AL1(L'HDR2TXT)                                           
+HDR2TXT  DC    C'<<< FULL PROGRAM STORAGE WORD3...LASTFLD >>>'          
+                                                                        
+LASTFLD  DS    CL4                                                     
+                                                                        
+          LTORG *                                                       
+         END   ADD2                                                    
+/*                                                                     
+//*L.SYSLMOD DD DSN=Z01427.TEST.LOADLIB(ADD2),DISP=SHR               
+//*                                                                    
+//G.SNAPDUMP  DD SYSOUT=*
+//                                                                     

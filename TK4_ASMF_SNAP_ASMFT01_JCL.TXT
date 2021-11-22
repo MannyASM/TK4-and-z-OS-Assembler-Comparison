@@ -1,0 +1,122 @@
+000001 //HERC01T0  JOB (BAL),                                                
+000002 //        'TEST SNAP',                                                
+000003 //        CLASS=A,                                                    
+000004 //        MSGCLASS=H,                                                 
+000005 //        TIME=(1440),                                                
+000006 //        MSGLEVEL=(1,1),                                             
+000007 //        NOTIFY=HERC01                                               
+000008 //*----------------------------------------------------------------   
+000009 //* CLEAR OUTPUT FILES                                                
+000010 //*----------------------------------------------------------------   
+000011 //*EL     EXEC PGM=IEFBR14                                            
+000012 //*D1     DD DISP=(OLD,DELETE,DELETE),DSN=HERC01.TEST.ASMFLIST        
+000013 //*D2     DD DISP=(OLD,DELETE,DELETE),DSN=HERC01.TEST.SNAPOUT         
+000014 //*                                                                   
+000015 //*----------------------------------------------------------------   
+000016 //* ASSEMBLE, LINK AND GO                                             
+000017 //*----------------------------------------------------------------   
+000018 //TESTASM EXEC ASMFCLG                                                
+000019 //ASM.SYSPRINT DD DSN=HERC01.TEST.ASMFLIST,DISP=SHR                   
+000020 //*            UNIT=SYSDA,SPACE=(TRK,(1,1,1),RLSE),                   
+000021 //*            DCB=BLKSIZE=1089                                       
+000022 //*                                                                   
+000023 //SYSIN DD *                                                          
+000024          TITLE 'ADD2 PROGRAM-MANNY'                                   
+000025          PRINT ON,DATA,GEN                                            
+000026 ADD2     CSECT                                                        
+000027          STM   R14,R12,12(R13)               SAVE REGISTERS           
+000028          BASR  R12,R0                                                 
+000029          USING *,R12                         DEFINE R12 AS BASE REG   
+000030          ST    R13,SAVEA+4                                            
+000031          LA    R13,SAVEA                                              
+000032 * -----------------------------------------------------------------   
+000033          WTO   'BEFORE THE ADD/SNAP',ROUTCDE=(1)                      
+000034                                                                       
+000035          L     R4,WORD1                                               
+000036          L     R5,WORD2                                               
+000037          AR    R4,R5                                                  
+000038          ST    R4,WORD3                                               
+000039                                                                        
+000040          OPEN  (SNAPDUMP,OUTPUT)                                       
+000041          LA    R3,SNAPDUMP                                             
+000042                                                                        
+000043 * -----------------------------------------------------------------    
+000044 * SNAP PARMS                                                           
+000045 * ----------                                                           
+000046 * PDATA   ALL,PSW,REGS,SA,SAH,JPA,LPA,ALLPA,SPLS,SUBTASKS              
+000047 * SDATA:  ALL,NUC,SQA,LSQA,PCDATA,SWA,CB,Q,TRT,DM,ERR,IO,ALLVNUC,SUM   
+000048 * STORAGE START-ADDR,END-ADDR (A-TYPE ADDRESS)                         
+000049 * STRHDR  HDR ADDRESS (A-TYPE ADDRESS)                                 
+000050 * -----------------------------------------------------------------    
+000051                                                                        
+000052 * PROGRAM CALL DATA                                                    
+000053 * -----------------                                                    
+000054 *        SNAP  DCB=(R3),ID=1111,PDATA=ALL                              
+000055 *        SNAP  DCB=(R3),ID=1111,PDATA=PSW                              
+000056 *        SNAP  DCB=(R3),ID=1111,PDATA=SUBTASKS                         
+000057 *        SNAP  DCB=(R3),ID=1111,PDATA=(PSW,REGS)                       
+000058                                                                        
+000059 * SYSTEM CONTROL DATA                                                  
+000060 * -------------------                                                  
+000061 *        SNAP  DCB=(R3),ID=1111,SDATA=ALL                              
+000062 *        SNAP  DCB=(R3),ID=1111,SDATA=SUM                              
+000063 *        SNAP  DCB=(R3),ID=1111,SDATA=(SUM,PCDATA)                     
+000064                                                                        
+000065 * SYSTEM CONTROL DATA                                                  
+000066 * -------------------                                                  
+000067          LA    R5,WORD3                   PREP 2 REGS TO USE WITH SNAP 
+000068          LA    R6,END1                                                 
+000069                                                                        
+000070 *        SNAP  DCB=(R3),ID=1111,STORAGE=(R5,R6),STRHDR=HDR1            
+000071          SNAP  DCB=(R3),ID=1111,STORAGE=(WORD3,END1),STRHDR=HDR1       
+000072 *        SNAP  DCB=(R3),ID=1111,STORAGE=(WORD3,WORD3+4),STRHDR=HDR2    
+000073          SNAP  DCB=(R3),ID=1111,STORAGE=(ADD2,LASTFLD),STRHDR=HDR2     
+000074 *        SNAP  DCB=(R3),ID=1111,STORAGE=(R5,R6),STRHDR=HDR1            
+000075                                                                        
+000076 * -----------------------------------------------------------------    
+000077                                                                         
+000078          CLOSE SNAPDUMP                                                 
+000079                                                                         
+000080          WTO   'AFTER THE SNAP',ROUTCDE=(1)  SEND MSG TO CONSOLE        
+000081 * -----------------------------------------------------------------     
+000082          L     R13,SAVEA+4                   PREP TO EXIT               
+000083          LM    R14,R12,12(R13)               RESTORE REGS               
+000084          SR    R15,0                         ZERO OUT RETURN CODE       
+000085          BR    R14                                                      
+000086 * -----------------------------------------------------------------     
+000087 SAVEA    DS    18F                                                      
+000088                                                                         
+000089          YREGS                               REGISTER EQUATES           
+000090                                                                         
+000091 SNAPDUMP DCB   DSORG=PS,                                               X
+000092                MACRF=(W),                                              X
+000093                DEVD=SYSDA,                                             X
+000094                DDNAME=SNAPDUMP,                                        X
+000095                RECFM=VBA,                                              X
+000096                LRECL=125,                                              X
+000097                BLKSIZE=882                                              
+000098                                                                         
+000099 WORD1    DC    F'4'                                                     
+000100 WORD2    DC    F'6'                                                     
+000101                                                                         
+000102 BEG1     EQU   *                                                        
+000103 WORD3    DS    F                                                        
+000104 END1     EQU   *                                                        
+000105                                                                         
+000106 HDR1     DC    AL1(L'HDR1TXT)                                           
+000107 HDR1TXT  DC    C'<<< WORD3...END1 STORAGE >>>'                          
+000108                                                                         
+000109 HDR2     DC    AL1(L'HDR2TXT)                                           
+000110 HDR2TXT  DC    C'<<< FULL PROGRAM STORAGE WORD3...LASTFLD >>>'          
+000111                                                                        
+000112 LASTFLD  DS    CL4                                                     
+000113                                                                        
+000114          LTORG *                                                       
+000115          END   ADD2                                                    
+000116 /*                                                                     
+000117 //LKED.SYSLMOD DD DSN=HERC01.TEST.LOADLIB(ADD2),DISP=SHR               
+000118 //*                                                                    
+000119 //GO.SNAPDUMP  DD DSN=HERC01.TEST.SNAPOUT,DISP=SHR                     
+000120 //*            UNIT=SYSDA,SPACE=(TRK,(1,1,1),RLSE),                    
+000121 //*            DCB=(DSORG=PS,RECFM=VB,LRECL=125,BLKSIZE=882)           
+000122 //                                                                     

@@ -1,0 +1,318 @@
+1                                               EXTERNAL SYMBOL DICTIONARY                                      PAGE    1
+-SYMBOL   TYPE  ID   ADDR  LENGTH LDID                                                            ASM 0201 23.22 11/17/21
+0ADD2      SD  0001 000000 000200
+1         ADD2 PROGRAM-MANNY                                                                                    PAGE    2
+-  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT                                       ASM 0201 23.22 11/17/21
+0                                      2          PRINT ON,DATA,GEN
+ 000000                                3 ADD2     CSECT
+ 000000 90EC D00C      0000C           4          STM   R14,R12,12(R13)               SAVE REGISTERS
+ 000004 0DC0                           5          BASR  R12,R0
+                             00006     6          USING *,R12                         DEFINE R12 AS BASE REG
+ 000006 50D0 C102      00108           7          ST    R13,SAVEA+4
+ 00000A 41D0 C0FE      00104           8          LA    R13,SAVEA
+                                       9 * -----------------------------------------------------------------
+                                      10          WTO   'BEFORE THE ADD/SNAP',ROUTCDE=(1)
+ 00000E 0700                          11+         CNOP  0,4                                                      09800002
+ 000010 4510 C02A      00030          12+         BAL   1,IHB0001A                        BRANCH AROUND MESSAGE  09850002
+ 000014 0017                          13+         DC    AL2(23)             TEXT LENGTH                          13200002
+ 000016 8000                          14+         DC    B'1000000000000000' MCS FLAGS                            13250002
+ 000018 C2C5C6D6D9C540E3              15+         DC    C'BEFORE THE ADD/SNAP'                                   13350002
+ 000020 C8C540C1C4C461E2
+ 000028 D5C1D7
+ 00002B 0000                          16+         DC    B'0000000000000000' DESCRIPTOR CODES                     13450002
+ 00002D 8000                          17+         DC    B'1000000000000000' ROUTING CODES                        13500002
+ 000030                               18+IHB0001A DS    0H                                                       15850002
+ 000030 0A23                          19+         SVC   35                                                       15950002
+
+ 000032 5840 C19E      001A4          21          L     R4,WORD1
+ 000036 5850 C1A2      001A8          22          L     R5,WORD2
+ 00003A 1A45                          23          AR    R4,R5
+ 00003C 5040 C1A6      001AC          24          ST    R4,WORD3
+
+                                      26          OPEN  (SNAPDUMP,OUTPUT)
+ 000040                               27+         CNOP  0,4                               ALIGN LIST TO FULLWORD 01740001
+ 000040 4510 C042      00048          28+         BAL   1,*+8                             LOAD REG1 W/LIST ADDR. 01780000
+ 000044 8F                            29+         DC    AL1(143)                          OPTION BYTE            01900000
+ 000045 00014C                        30+         DC    AL3(SNAPDUMP)                     DCB ADDRESS            01920000
+ 000048 0A13                          31+         SVC   19                                ISSUE OPEN SVC         04000000
+ 00004A 4130 C146      0014C          32          LA    R3,SNAPDUMP
+
+                                      34 * -----------------------------------------------------------------
+                                      35 * SNAP PARMS
+                                      36 * ----------
+                                      37 * PDATA   ALL,PSW,REGS,SA,SAH,JPA,LPA,ALLPA,SPLS,SUBTASKS
+                                      38 * SDATA:  ALL,NUC,SQA,LSQA,PCDATA,SWA,CB,Q,TRT,DM,ERR,IO,ALLVNUC,SUM
+                                      39 * STORAGE START-ADDR,END-ADDR (A-TYPE ADDRESS)
+                                      40 * STRHDR  HDR ADDRESS (A-TYPE ADDRESS)
+                                      41 * -----------------------------------------------------------------
+
+                                      43 * PROGRAM CALL DATA
+                                      44 * -----------------
+                                      45 *        SNAP  DCB=(R3),ID=1111,PDATA=ALL
+                                      46 *        SNAP  DCB=(R3),ID=1111,PDATA=PSW
+                                      47 *        SNAP  DCB=(R3),ID=1111,PDATA=SUBTASKS
+                                      48 *        SNAP  DCB=(R3),ID=1111,PDATA=(PSW,REGS)
+
+                                      50 * SYSTEM CONTROL DATA
+                                      51 * -------------------
+                                      52 *        SNAP  DCB=(R3),ID=1111,SDATA=ALL
+                                      53 *        SNAP  DCB=(R3),ID=1111,SDATA=SUM
+                                      54 *        SNAP  DCB=(R3),ID=1111,SDATA=(SUM,PCDATA)
+1         ADD2 PROGRAM-MANNY                                                                                    PAGE    3
+-  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT                                       ASM 0201 23.22 11/17/21
+0                                     56 * SYSTEM CONTROL DATA
+                                      57 * -------------------
+ 00004E 4150 C1A6      001AC          58          LA    R5,WORD3                   PREP 2 REGS TO USE WITH SNAP
+ 000052 4160 C1AA      001B0          59          LA    R6,END1
+
+                                      61 *        SNAP  DCB=(R3),ID=1111,STORAGE=(R5,R6),STRHDR=HDR1
+                                      62          SNAP  DCB=(R3),ID=1111,STORAGE=(WORD3,END1),STRHDR=HDR1
+                                      63+* /* MACDATE Y-1 72179  LAST UPDATED -02/03/81 EBB1102 - APAR OZ51152*/ 00002403
+ 000056 0700                          64+         CNOP  0,4                                                      00137643
+ 000058 4510 C07A      00080          65+         BAL   1,IHB0003           BRANCH AROUND PARAM LIST             00138043
+ 00005C 57                            66+         DC    AL1(1111)           ID NUMBER                            00139643
+ 00005D 7B                            67+         DC    AL1(123)            OPTION FLAGS                  Y02705 00141643
+ 00005E 0000                          68+         DC    H'0'                RESERVED                      Y02705 00141843
+ 000060 00                            69+         DC    AL1(0)              SDATA FLAGS ONE               Y02705 00142443
+ 000061 00                            70+         DC    AL1(0)              SDATA FLAGS TWO              G33SPHW 00142543
+ 000062 00                            71+         DC    AL1(0)              PDATA FLAGS                   Y02705 00142743
+ 000063 00                            72+         DC    AL1(0)              RESERVED                      Y02705 00143343
+ 000064 00000000                      73+         DC    A(0)                TCB ADDRESS                          00146043
+ 000068 00000000                      74+         DC    A(0)                TCB ADDRESS                          00146843
+ 00006C 00000074                      75+         DC    A(*+8)              ADDRESS OF SNAP-SHOT LIST            00156043
+ 000070 0000007C                      76+         DC    A(*+12)             ADDRESS OF HEADER LIST       G33SPHW 00157343
+ 000074 000001AC                      77+         DC    A(WORD3)            STARTING/ENDING ADDRESS              00161643
+ 000078 000001B0                      78+         DC    A(END1)             STARTING/ENDING ADDRESS              00161643
+ 00007C 000001B0                      79+         DC    A(HDR1)             ADDRESS OF HEADER            G33SPHW 00167943
+ 000080                               80+IHB0003  DS    0H                                                       00174843
+ 000080 9680 101C      0001C          81+         OI    28(1),X'80'         SET END OF LIST INDICATOR     Y02705 00113243
+ 000084 9680 1020      00020          82+         OI    32(1),X'80'         SET END OF HEADER INDICATOR  G33SPHW 00120043
+ 000088 4133 0000      00000          83+         LA    (R3),0(R3)    CLEAR HIGH ORDER BYTE OF DCB ADR  @ZA09196 00200643
+ 00008C 5030 1008      00008          84+         ST    (R3),8(0,1)   STORE DCB ADDRESS INTO PARM LIST   G33SPHW 00200843
+ 000090 0A33                          85+         SVC   51                                                       00201643
+                                      86 *        SNAP  DCB=(R3),ID=1111,STORAGE=(WORD3,WORD3+4),STRHDR=HDR2
+                                      87          SNAP  DCB=(R3),ID=1111,STORAGE=(ADD2,LASTFLD),STRHDR=HDR2
+                                      88+* /* MACDATE Y-1 72179  LAST UPDATED -02/03/81 EBB1102 - APAR OZ51152*/ 00002403
+ 000092 0700                          89+         CNOP  0,4                                                      00137643
+ 000094 4510 C0B6      000BC          90+         BAL   1,IHB0004           BRANCH AROUND PARAM LIST             00138043
+ 000098 57                            91+         DC    AL1(1111)           ID NUMBER                            00139643
+ 000099 7B                            92+         DC    AL1(123)            OPTION FLAGS                  Y02705 00141643
+ 00009A 0000                          93+         DC    H'0'                RESERVED                      Y02705 00141843
+ 00009C 00                            94+         DC    AL1(0)              SDATA FLAGS ONE               Y02705 00142443
+ 00009D 00                            95+         DC    AL1(0)              SDATA FLAGS TWO              G33SPHW 00142543
+ 00009E 00                            96+         DC    AL1(0)              PDATA FLAGS                   Y02705 00142743
+ 00009F 00                            97+         DC    AL1(0)              RESERVED                      Y02705 00143343
+ 0000A0 00000000                      98+         DC    A(0)                TCB ADDRESS                          00146043
+ 0000A4 00000000                      99+         DC    A(0)                TCB ADDRESS                          00146843
+ 0000A8 000000B0                     100+         DC    A(*+8)              ADDRESS OF SNAP-SHOT LIST            00156043
+ 0000AC 000000B8                     101+         DC    A(*+12)             ADDRESS OF HEADER LIST       G33SPHW 00157343
+ 0000B0 00000000                     102+         DC    A(ADD2)             STARTING/ENDING ADDRESS              00161643
+ 0000B4 000001FA                     103+         DC    A(LASTFLD)          STARTING/ENDING ADDRESS              00161643
+ 0000B8 000001CD                     104+         DC    A(HDR2)             ADDRESS OF HEADER            G33SPHW 00167943
+ 0000BC                              105+IHB0004  DS    0H                                                       00174843
+ 0000BC 9680 101C      0001C         106+         OI    28(1),X'80'         SET END OF LIST INDICATOR     Y02705 00113243
+ 0000C0 9680 1020      00020         107+         OI    32(1),X'80'         SET END OF HEADER INDICATOR  G33SPHW 00120043
+ 0000C4 4133 0000      00000         108+         LA    (R3),0(R3)    CLEAR HIGH ORDER BYTE OF DCB ADR  @ZA09196 00200643
+ 0000C8 5030 1008      00008         109+         ST    (R3),8(0,1)   STORE DCB ADDRESS INTO PARM LIST   G33SPHW 00200843
+ 0000CC 0A33                         110+         SVC   51                                                       00201643
+1         ADD2 PROGRAM-MANNY                                                                                    PAGE    4
+-  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT                                       ASM 0201 23.22 11/17/21
+0                                    111 *        SNAP  DCB=(R3),ID=1111,STORAGE=(R5,R6),STRHDR=HDR1
+
+                                     113 * -----------------------------------------------------------------
+
+                                     115          CLOSE SNAPDUMP
+ 0000CE 0700                         116+         CNOP  0,4                               ALIGN LIST TO FULLWORD 02420002
+ 0000D0 4510 C0D2      000D8         117+         BAL   1,*+8                             LOAD REG1 W/LIST ADDR  02460002
+ 0000D4 80                           118+         DC    AL1(128)                          OPTION BYTE            02580000
+ 0000D5 00014C                       119+         DC    AL3(SNAPDUMP)                     DCB ADDRESS            02600000
+ 0000D8 0A14                         120+         SVC   20                                ISSUE CLOSE SVC        01640000
+
+                                     122          WTO   'AFTER THE SNAP',ROUTCDE=(1)  SEND MSG TO CONSOLE
+ 0000DA 0700                         123+         CNOP  0,4                                                      09800002
+ 0000DC 4510 C0F0      000F6         124+         BAL   1,IHB0006A                        BRANCH AROUND MESSAGE  09850002
+ 0000E0 0012                         125+         DC    AL2(18)             TEXT LENGTH                          13200002
+ 0000E2 8000                         126+         DC    B'1000000000000000' MCS FLAGS                            13250002
+ 0000E4 C1C6E3C5D940E3C8             127+         DC    C'AFTER THE SNAP'                                        13350002
+ 0000EC C540E2D5C1D7
+ 0000F2 0000                         128+         DC    B'0000000000000000' DESCRIPTOR CODES                     13450002
+ 0000F4 8000                         129+         DC    B'1000000000000000' ROUTING CODES                        13500002
+ 0000F6                              130+IHB0006A DS    0H                                                       15850002
+ 0000F6 0A23                         131+         SVC   35                                                       15950002
+                                     132 * -----------------------------------------------------------------
+ 0000F8 58D0 C102      00108         133          L     R13,SAVEA+4                   PREP TO EXIT
+ 0000FC 98EC D00C      0000C         134          LM    R14,R12,12(R13)               RESTORE REGS
+ 000100 1BF0                         135          SR    R15,0                         ZERO OUT RETURN CODE
+ 000102 07FE                         136          BR    R14
+                                     137 * -----------------------------------------------------------------
+ 000104                              138 SAVEA    DS    18F
+
+                                     140          YREGS                               REGISTER EQUATES
+
+                             00000   142+R0       EQU   0                                                        00060000
+                             00001   143+R1       EQU   1                                                        00070000
+                             00002   144+R2       EQU   2                                                        00080000
+                             00003   145+R3       EQU   3                                                        00090000
+                             00004   146+R4       EQU   4                                                        00100000
+                             00005   147+R5       EQU   5                                                        00110000
+                             00006   148+R6       EQU   6                                                        00120000
+                             00007   149+R7       EQU   7                                                        00130000
+                             00008   150+R8       EQU   8                                                        00140000
+                             00009   151+R9       EQU   9                                                        00150000
+                             0000A   152+R10      EQU   10                                                       00160000
+                             0000B   153+R11      EQU   11                                                       00170000
+                             0000C   154+R12      EQU   12                                                       00180000
+                             0000D   155+R13      EQU   13                                                       00190000
+                             0000E   156+R14      EQU   14                                                       00200000
+                             0000F   157+R15      EQU   15                                                       00210000
+
+
+                                     160 SNAPDUMP DCB   DSORG=PS,                                               X
+                                                        MACRF=(W),                                              X
+                                                        DEVD=SYSDA,                                             X
+                                                        DDNAME=SNAPDUMP,                                        X
+                                                        RECFM=VBA,                                              X
+1         ADD2 PROGRAM-MANNY                                                                                    PAGE    5
+-  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT                                       ASM 0201 23.22 11/17/21
+0                                                       LRECL=125,                                              X
+                                                        BLKSIZE=882
+                                     161+    8,***  IHB060  SYSDA INVALID CODE FOR DEVD WITH DSORG=PS-IGNORED
+0
+                                     163+*                       DATA CONTROL BLOCK                              22770000
+                                     164+*                                                                       22860000
+ 00014C                              165+SNAPDUMP DC    0F'0'                   ORIGIN ON WORD BOUNDARY          22914000
+
+                                     167+*                       DIRECT ACCESS DEVICE INTERFACE                  27360000
+
+ 00014C 0000000000000000             169+         DC    BL16'0'                  FDAD,DVTBL                      27540000
+ 000154 0000000000000000
+ 00015C 00000000                     170+         DC    A(0)                     KEYLE,DEVT,TRBAL                27720000
+
+                                     172+*                       COMMON ACCESS METHOD INTERFACE                  48690000
+
+ 000160 00                           174+         DC    AL1(0)                  BUFNO                            49050000
+ 000161 000001                       175+         DC    AL3(1)                  BUFCB                            54720000
+ 000164 0000                         176+         DC    AL2(0)             BUFL                                  55170000
+ 000166 4000                         177+         DC    BL2'0100000000000000'                                   *55800000
+                                        +                                                 DSORG                  55890000
+ 000168 00000001                     178+         DC    A(1)                     IOBAD                           56340000
+
+                                     180+*                       FOUNDATION EXTENSION                            56610000
+
+ 00016C 00                           182+         DC    BL1'00000000'                  BFTEK,BFLN,HIARCHY        59850000
+ 00016D 000001                       183+         DC    AL3(1)                  EODAD                            65970000
+ 000170 54                           184+         DC    BL1'01010100'                                           *66150000
+                                        +                                       RECFM                            66240000
+ 000171 000000                       185+         DC    AL3(0)                  EXLST                            66330000
+
+                                     187+*                       FOUNDATION BLOCK                                66690000
+
+ 000174 E2D5C1D7C4E4D4D7             189+         DC    CL8'SNAPDUMP'           DDNAME                           66870000
+ 00017C 02                           190+         DC    BL1'00000010'           OFLGS                            68220000
+ 00017D 00                           191+         DC    BL1'00000000'                          IFLG              68310000
+ 00017E 0020                         192+         DC    BL2'0000000000100000'                                   *68400000
+                                        +                                                                       *68490000
+                                        +                                       MACR                             68580000
+
+                                     194+*                       BSAM-BPAM-QSAM INTERFACE                        74430000
+
+ 000180 00                           196+         DC    BL1'00000000'                                           *74610000
+                                        +                                                                   RER1 74700000
+ 000181 000001                       197+         DC    AL3(1)                  CHECK, GERR, PERR                74790000
+ 000184 00000001                     198+         DC    A(1)                    SYNAD                            74880000
+ 000188 0000                         199+         DC    H'0'                    CIND1, CIND2                     74970000
+ 00018A 0372                         200+         DC    AL2(882)                BLKSIZE                          75240000
+ 00018C 00000000                     201+         DC    F'0'                    WCPO, WCPL, OFFSR, OFFSW         75870000
+ 000190 00000001                     202+         DC    A(1)                    IOBA                             75960000
+ 000194 00                           203+         DC    AL1(0)                  NCP                              76050000
+ 000195 000001                       204+         DC    AL3(1)                  EOBR, EOBAD                      76140000
+
+                                     206+*                         BSAM-BPAM INTERFACE                           76410000
+1         ADD2 PROGRAM-MANNY                                                                                    PAGE    6
+-  LOC  OBJECT CODE    ADDR1 ADDR2  STMT   SOURCE STATEMENT                                       ASM 0201 23.22 11/17/21
+0000198 00000001                     208+         DC    A(1)                    EOBW                             76590000
+ 00019C 0000                         209+         DC    H'0'                    DIRCT                            78210000
+ 00019E 007D                         210+         DC    AL2(125)       LRECL                                     80730000
+ 0001A0 00000001                     211+         DC    A(1)                    CNTRL, NOTE, POINT               78480000
+
+ 0001A4 00000004                     213 WORD1    DC    F'4'
+ 0001A8 00000006                     214 WORD2    DC    F'6'
+
+                             001AC   216 BEG1     EQU   *
+ 0001AC                              217 WORD3    DS    F
+                             001B0   218 END1     EQU   *
+
+ 0001B0 1C                           220 HDR1     DC    AL1(L'HDR1TXT)
+ 0001B1 4C4C4C40E6D6D9C4             221 HDR1TXT  DC    C'<<< WORD3...END1 STORAGE >>>'
+ 0001B9 F34B4B4BC5D5C4F1
+ 0001C1 40E2E3D6D9C1C7C5
+ 0001C9 406E6E6E
+
+ 0001CD 2C                           223 HDR2     DC    AL1(L'HDR2TXT)
+ 0001CE 4C4C4C40C6E4D3D3             224 HDR2TXT  DC    C'<<< FULL PROGRAM STORAGE WORD3...LASTFLD >>>'
+ 0001D6 40D7D9D6C7D9C1D4
+ 0001DE 40E2E3D6D9C1C7C5
+ 0001E6 40E6D6D9C4F34B4B
+ 0001EE 4BD3C1E2E3C6D3C4
+ 0001F6 406E6E6E
+
+ 0001FA                              226 LASTFLD  DS    CL4
+
+ 000200                              228          LTORG *
+ 000000                              229          END   ADD2
+1                                                  RELOCATION DICTIONARY                                        PAGE    7
+-POS.ID   REL.ID   FLAGS   ADDRESS                                                                ASM 0201 23.22 11/17/21
+0 0001     0001      08     000045
+  0001     0001      0C     00006C
+  0001     0001      0C     000070
+  0001     0001      0C     000074
+  0001     0001      0C     000078
+  0001     0001      0C     00007C
+  0001     0001      0C     0000A8
+  0001     0001      0C     0000AC
+  0001     0001      0C     0000B0
+  0001     0001      0C     0000B4
+  0001     0001      0C     0000B8
+  0001     0001      08     0000D5
+
+1                                                  CROSS-REFERENCE                                              PAGE    8
+-SYMBOL    LEN   VALUE   DEFN    REFERENCES                                                       ASM 0201 23.22 11/17/21
+0ADD2     00001 00000000 00003  00102 00229
+ END1     00001 000001B0 00218  00059 00078
+ HDR1     00001 000001B0 00220  00079
+ HDR1TXT  00028 000001B1 00221  00220
+ HDR2     00001 000001CD 00223  00104
+ HDR2TXT  00044 000001CE 00224  00223
+ IHB0001A 00002 00000030 00018  00012
+ IHB0003  00002 00000080 00080  00065
+ IHB0004  00002 000000BC 00105  00090
+ IHB0006A 00002 000000F6 00130  00124
+ LASTFLD  00004 000001FA 00226  00103
+ R0       00001 00000000 00142  00005
+ R12      00001 0000000C 00154  00004 00005 00006 00134
+ R13      00001 0000000D 00155  00004 00007 00008 00133 00134
+ R14      00001 0000000E 00156  00004 00134 00136
+ R15      00001 0000000F 00157  00135
+ R3       00001 00000003 00145  00032 00083 00083 00084 00108 00108 00109
+ R4       00001 00000004 00146  00021 00023 00024
+ R5       00001 00000005 00147  00022 00023 00058
+ R6       00001 00000006 00148  00059
+ SAVEA    00004 00000104 00138  00007 00008 00133
+ SNAPDUMP 00004 0000014C 00165  00030 00032 00119
+ WORD1    00004 000001A4 00213  00021
+ WORD2    00004 000001A8 00214  00022
+ WORD3    00004 000001AC 00217  00024 00058 00077
+1                                                  ASSEMBLER DIAGNOSTICS AND STATISTICS                         PAGE    9
+-STMT  ERROR CODE   MESSAGE                                                                       ASM 0201 23.22 11/17/21
+0  161  IFO197      *** MNOTE ***
+0NUMBER OF STATEMENTS FLAGGED IN THIS ASSEMBLY =     1
+ HIGHEST SEVERITY WAS    8
+ OPTIONS FOR THIS ASSEMBLY
+   ALIGN, ALOGIC, BUFSIZE(STD), DECK, ESD, FLAG(0), LINECOUNT(55), LIST, NOMCALL, YFLAG, WORKSIZE(2097152)
+   NOMLOGIC, NONUMBER, OBJECT, NORENT, RLD, NOSTMT, NOLIBMAC, NOTERMINAL, NOTEST, XREF(SHORT)
+   SYSPARM()
+ WORK FILE BUFFER SIZE/NUMBER = 8702/ 1
+ TOTAL RECORDS READ FROM SYSTEM INPUT         92
+ TOTAL RECORDS READ FROM SYSTEM LIBRARY     4107
+ TOTAL RECORDS PUNCHED                        12
+ TOTAL RECORDS PRINTED                       318

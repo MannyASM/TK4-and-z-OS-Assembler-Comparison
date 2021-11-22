@@ -1,0 +1,399 @@
+»
+                                         High Level Assembler Option Summary                   (PTF UI77556)   Page    1
+                                                                                            HLASM R6.0  2021/11/22 09.08
+  No Overriding ASMAOPT Parameters
+  No Overriding Parameters
+  No Process Statements
+
+
+  Options for this Assembly
+                    NOADATA
+                      ALIGN
+                    NOASA
+                      BATCH
+                      CODEPAGE(047C)
+                    NOCOMPAT
+                    NODATAMAP
+                    NODBCS
+                    NODECK
+                      DXREF
+                      ESD
+                    NOEXIT
+                      FAIL(NOMSG,NOMNOTE,MAXERRS(500))
+                      FLAG(0,ALIGN,CONT,EXLITW,NOIMPLEN,NOLONGER,NOPAGE0,PUSH,RECORD,RENT,NOSIGNED,NOSUBSTR,NOTRUNC,
+                           USING0)
+                    NOFOLD
+                    NOGOFF
+                      ILMA
+                    NOINFO
+                      LANGUAGE(EN)
+                    NOLIBMAC
+                      LINECOUNT(60)
+                      LIST(121)
+                      MACHINE(,NOLIST)
+                      MXREF(SOURCE)
+                      OBJECT
+                      OPTABLE(UNI,NOLIST)
+                    NOPCONTROL
+                    NOPESTOP
+                    NOPROFILE
+                    NORA2
+                    NORENT
+                      RLD
+                      RXREF
+                      SECTALGN(8)
+                      SIZE(MAX)
+                    NOSUPRWARN
+                      SYSPARM()
+                    NOTERM
+                    NOTEST
+                      THREAD
+                    NOTRANSLATE
+                      TYPECHECK(MAGNITUDE,REGISTER,SIGNED)
+                      USING(NOLIMIT,MAP,WARN(15))
+                    NOWORKFILE
+                      XREF(SHORT,UNREFS)
+
+  No Overriding DD Names
+»
+                                              External Symbol Dictionary                                       Page    2
+Symbol   Type   Id     Address  Length   Owner Id Flags Alias-of                            HLASM R6.0  2021/11/22 09.08
+ADD2      SD 00000001 00000000 00000200             00
+»
+         ADD2-TEST SNAP IN Z/OS 2.04                                                                           Page    3
+  Active Usings: None
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2021/11/22 09.08
+                                      2          PRINT ON,DATA,GEN
+000000                00000 00200     3 ADD2     CSECT
+000000 90EC D00C            0000C     4          STM   R14,R12,12(R13)            SAVE REGISTERS
+000004 0DC0                           5          BASR  R12,R0
+                 R:C  00006           6          USING *,R12                      DEFINE R12 AS BASE REG
+000006 50D0 C102            00108     7          ST    R13,SAVEA+4
+00000A 41D0 C0FE            00104     8          LA    R13,SAVEA
+                                      9 * -----------------------------------------------------------------
+                                     10          WTO   'BEFORE THE ADD/SNAP',ROUTCDE=(1)
+00000E 0700                          12+         CNOP  0,4                                                      01-WTO
+000010 A715 0010            00030    13+         BRAS  1,IHB0001A               BRANCH AROUND MESSAGE      @LCC 01-WTO
+000014 0017                          14+         DC    AL2(23)                  TEXT LENGTH            @YA17152 01-WTO
+000016 8000                          15+         DC    B'1000000000000000'      MCSFLAGS                        01-WTO
+000018 C2C5C6D6D9C540E3              16+         DC    C'BEFORE THE ADD/SNAP'   MESSAGE TEXT               @L6C 01-WTO
+000020 C8C540C1C4C461E2
+000028 D5C1D7
+00002B 0000                          17+         DC    B'0000000000000000'      DESCRIPTOR CODES                01-WTO
+00002D 8000                          18+         DC    B'1000000000000000'      ROUTING CODES                   01-WTO
+000030                               19+IHB0001A DS    0H                                                       01-WTO
+000030 0A23                          20+         SVC   35                       ISSUE SVC 35               @L6A 01-WTO
+000032 5840 C19E            001A4    22          L     R4,WORD1
+000036 5850 C1A2            001A8    23          L     R5,WORD2
+00003A 1A45                          24          AR    R4,R5
+00003C 5040 C1A6            001AC    25          ST    R4,WORD3
+                                     27          OPEN  (SNAPDUMP,OUTPUT)
+000040                               29+         CNOP  0,4                      Align list to word              01-OPEN
+000040 4D10 C042            00048    30+         BAS   1,*+8                    Load reg 1 with list address    01-OPEN
+000044 8F                            31+         DC    AL1(143)                 Option byte                     01-OPEN
+000045 00014C                        32+         DC    AL3(SNAPDUMP)            DCB or ACB address              01-OPEN
+000048 0A13                          33+         SVC   19                       Issue OPEN SVC                  01-OPEN
+00004A 4130 C146            0014C    34          LA    R3,SNAPDUMP
+                                     36 * -----------------------------------------------------------------
+                                     37 * SNAP PARMS
+                                     38 * ----------
+                                     39 * PDATA   ALL,PSW,REGS,SA,SAH,JPA,LPA,ALLPA,SPLS,SUBTASKS
+                                     40 * SDATA:  ALL,NUC,SQA,LSQA,PCDATA,SWA,CB,Q,TRT,DM,ERR,IO,ALLVNUC,SUM
+                                     41 * STORAGE START-ADDR,END-ADDR (A-TYPE ADDRESS)
+                                     42 * STRHDR  HDR ADDRESS (A-TYPE ADDRESS)
+                                     43 * -----------------------------------------------------------------
+                                     45 * PROGRAM CALL DATA
+                                     46 * -----------------
+                                     47 *        SNAP  DCB=(R3),ID=1111,PDATA=ALL
+                                     48 *        SNAP  DCB=(R3),ID=1111,PDATA=PSW
+                                     49 *        SNAP  DCB=(R3),ID=1111,PDATA=SUBTASKS
+                                     50 *        SNAP  DCB=(R3),ID=1111,PDATA=(PSW,REGS)
+                                     52 * SYSTEM CONTROL DATA
+                                     53 * -------------------
+                                     54 *        SNAP  DCB=(R3),ID=1111,SDATA=ALL
+                                     55 *        SNAP  DCB=(R3),ID=1111,SDATA=SUM
+i                                     56 *        SNAP  DCB=(R3),ID=1111,SDATA=(SUM,PCDATA)
+         ADD2-TEST SNAP IN Z/OS 2.04                                                                           Page    4
+  Active Usings: ADD2+X'6',R12
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2021/11/22 09.08
+                                     58 * SYSTEM CONTROL DATA
+                                     59 * -------------------
+00004E 4150 C1A6            001AC    60          LA    R5,WORD3                   PREP 2 REGS TO USE WITH SNAP
+000052 4160 C1AA            001B0    61          LA    R6,END1
+                                     63 *        SNAP  DCB=(R3),ID=1111,STORAGE=(R5,R6),STRHDR=HDR1
+                                     64          SNAP  DCB=(R3),ID=1111,STORAGE=(WORD3,END1),STRHDR=HDR1
+                                     65+* /* MACDATE Y-1 860219 LAST UPDATED 11/01/85 HBB3310                */
+000056 0700                          67+         CNOP  0,4                                                      01-SNAP
+000058 4510 C07A            00080    68+         BAL   1,IHB0005           BRANCH AROUND PARAM LIST             01-SNAP
+00005C 57                            69+         DC    AL1(1111)           ID NUMBER                            01-SNAP
+00005D 7B                            70+         DC    AL1(123)            OPTION FLAGS                  Y02705 01-SNAP
+00005E 80                            71+         DC    AL1(128)            OPTIONS FLAG 2              @G860P1Y 01-SNAP
+00005F 00                            72+         DC    AL1(0)              RESERVED                    @G382P12 01-SNAP
+000060 00                            73+         DC    AL1(0)              SDATA FLAGS ONE               Y02705 01-SNAP
+000061 00                            74+         DC    AL1(0)              SDATA FLAGS TWO              G33SPHW 01-SNAP
+000062 00                            75+         DC    AL1(0)              PDATA FLAGS                   Y02705 01-SNAP
+000063 00                            76+         DC    AL1(0)              RESERVED                      Y02705 01-SNAP
+000064 00000000                      77+         DC    A(0)                DCB ADDRESS                          01-SNAP
+000068 00000000                      78+         DC    A(0)                TCB ADDRESS                          01-SNAP
+00006C 00000074                      79+         DC    A(*+8)              ADDR OF SNAP-SHOT LIST      @G860P1Y 01-SNAP
+000070 0000007C                      80+         DC    A(*+12)             ADDRESS OF HEADER LIST       G33SPHW 01-SNAP
+000074 000001AC                      81+         DC    A(WORD3)            STORAGE ADDRESS                      01-SNAP
+000078 000001B0                      82+         DC    A(END1)             STORAGE ADDRESS                      01-SNAP
+00007C 000001B0                      83+         DC    A(HDR1)             ADDRESS OF HEADER            G33SPHW 01-SNAP
+000080                               84+IHB0005  DS    0H                                                       01-SNAP
+000080 9680 101C      0001C          85+         OI    28(1),X'80'         SET END OF LIST INDICATOR     Y02705 01-SNAP
+000084 9680 1020      00020          86+         OI    32(1),X'80'         SET END OF HEADER INDICATOR  G33SPHW 01-SNAP
+000088 5030 1008            00008    87+         ST    (R3),8(0,1)   STORE DCB ADDRESS INTO PARM LIST   G33SPHW 01-SNAP
+00008C 9200 1008      00008          88+         MVI   8(1),0        CLEAR HIGH ORDER BYTE OF DCB ADR      @P2A 01-SNAP
+000090 0A33                          89+         SVC   51                                                       01-SNAP
+                                     90 *        SNAP  DCB=(R3),ID=1111,STORAGE=(WORD3,WORD3+4),STRHDR=HDR2
+                                     91          SNAP  DCB=(R3),ID=1111,STORAGE=(ADD2,LASTFLD),STRHDR=HDR2
+                                     92+* /* MACDATE Y-1 860219 LAST UPDATED 11/01/85 HBB3310                */
+000092 0700                          94+         CNOP  0,4                                                      01-SNAP
+000094 4510 C0B6            000BC    95+         BAL   1,IHB0007           BRANCH AROUND PARAM LIST             01-SNAP
+000098 57                            96+         DC    AL1(1111)           ID NUMBER                            01-SNAP
+000099 7B                            97+         DC    AL1(123)            OPTION FLAGS                  Y02705 01-SNAP
+00009A 80                            98+         DC    AL1(128)            OPTIONS FLAG 2              @G860P1Y 01-SNAP
+00009B 00                            99+         DC    AL1(0)              RESERVED                    @G382P12 01-SNAP
+00009C 00                           100+         DC    AL1(0)              SDATA FLAGS ONE               Y02705 01-SNAP
+00009D 00                           101+         DC    AL1(0)              SDATA FLAGS TWO              G33SPHW 01-SNAP
+00009E 00                           102+         DC    AL1(0)              PDATA FLAGS                   Y02705 01-SNAP
+00009F 00                           103+         DC    AL1(0)              RESERVED                      Y02705 01-SNAP
+0000A0 00000000                     104+         DC    A(0)                DCB ADDRESS                          01-SNAP
+0000A4 00000000                     105+         DC    A(0)                TCB ADDRESS                          01-SNAP
+0000A8 000000B0                     106+         DC    A(*+8)              ADDR OF SNAP-SHOT LIST      @G860P1Y 01-SNAP
+0000AC 000000B8                     107+         DC    A(*+12)             ADDRESS OF HEADER LIST       G33SPHW 01-SNAP
+0000B0 00000000                     108+         DC    A(ADD2)             STORAGE ADDRESS                      01-SNAP
+0000B4 000001FA                     109+         DC    A(LASTFLD)          STORAGE ADDRESS                      01-SNAP
+0000B8 000001CD                     110+         DC    A(HDR2)             ADDRESS OF HEADER            G33SPHW 01-SNAP
+0000BC                              111+IHB0007  DS    0H                                                       01-SNAP
+0000BC 9680 101C      0001C         112+         OI    28(1),X'80'         SET END OF LIST INDICATOR     Y02705 01-SNAP
+0000C0 9680 1020      00020         113+         OI    32(1),X'80'         SET END OF HEADER INDICATOR  G33SPHW 01-SNAP
+i0000C4 5030 1008            00008   114+         ST    (R3),8(0,1)   STORE DCB ADDRESS INTO PARM LIST   G33SPHW 01-SNAP
+         ADD2-TEST SNAP IN Z/OS 2.04                                                                           Page    5
+  Active Usings: ADD2+X'6',R12
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2021/11/22 09.08
+0000C8 9200 1008      00008         115+         MVI   8(1),0        CLEAR HIGH ORDER BYTE OF DCB ADR      @P2A 01-SNAP
+0000CC 0A33                         116+         SVC   51                                                       01-SNAP
+                                    117 *        SNAP  DCB=(R3),ID=1111,STORAGE=(R5,R6),STRHDR=HDR1
+                                    119 * -----------------------------------------------------------------
+                                    121          CLOSE SNAPDUMP
+0000CE 0700                         123+         CNOP  0,4                      ALIGN LIST TO FULLWORD          01-CLOSE
+0000D0 4D10 C0D2            000D8   124+         BAS   1,*+8                    LOAD REG1 W/LIST ADDR           01-CLOSE
+0000D4 80                           125+         DC    AL1(128)                 OPTION BYTE                     01-CLOSE
+0000D5 00014C                       126+         DC    AL3(SNAPDUMP)            DCB OR ACB ADDRESS              01-CLOSE
+0000D8 0A14                         127+         SVC   20                       ISSUE CLOSE SVC                 01-CLOSE
+                                    129          WTO   'AFTER THE SNAP',ROUTCDE=(1)  SEND MSG TO CONSOLE
+0000DA 0700                         131+         CNOP  0,4                                                      01-WTO
+0000DC A715 000D            000F6   132+         BRAS  1,IHB0011A               BRANCH AROUND MESSAGE      @LCC 01-WTO
+0000E0 0012                         133+         DC    AL2(18)                  TEXT LENGTH            @YA17152 01-WTO
+0000E2 8000                         134+         DC    B'1000000000000000'      MCSFLAGS                        01-WTO
+0000E4 C1C6E3C5D940E3C8             135+         DC    C'AFTER THE SNAP'        MESSAGE TEXT               @L6C 01-WTO
+0000EC C540E2D5C1D7
+0000F2 0000                         136+         DC    B'0000000000000000'      DESCRIPTOR CODES                01-WTO
+0000F4 8000                         137+         DC    B'1000000000000000'      ROUTING CODES                   01-WTO
+0000F6                              138+IHB0011A DS    0H                                                       01-WTO
+0000F6 0A23                         139+         SVC   35                       ISSUE SVC 35               @L6A 01-WTO
+                                    140 * -----------------------------------------------------------------
+0000F8 58D0 C102            00108   141          L     R13,SAVEA+4                   PREP TO EXIT
+0000FC 98EC D00C            0000C   142          LM    R14,R12,12(R13)               RESTORE REGS
+000100 1BF0                         143          SR    R15,0                         ZERO OUT RETURN CODE
+000102 07FE                         144          BR    R14
+                                    145 * -----------------------------------------------------------------
+000104                              146 SAVEA    DS    18F
+                                    148          YREGS                               REGISTER EQUATES
+                      00000         150+R0       EQU   0                                                        01-YREGS
+                      00001         151+R1       EQU   1                                                        01-YREGS
+                      00002         152+R2       EQU   2                                                        01-YREGS
+                      00003         153+R3       EQU   3                                                        01-YREGS
+                      00004         154+R4       EQU   4                                                        01-YREGS
+                      00005         155+R5       EQU   5                                                        01-YREGS
+                      00006         156+R6       EQU   6                                                        01-YREGS
+                      00007         157+R7       EQU   7                                                        01-YREGS
+                      00008         158+R8       EQU   8                                                        01-YREGS
+                      00009         159+R9       EQU   9                                                        01-YREGS
+                      0000A         160+R10      EQU   10                                                       01-YREGS
+                      0000B         161+R11      EQU   11                                                       01-YREGS
+                      0000C         162+R12      EQU   12                                                       01-YREGS
+                      0000D         163+R13      EQU   13                                                       01-YREGS
+                      0000E         164+R14      EQU   14                                                       01-YREGS
+                      0000F         165+R15      EQU   15                                                       01-YREGS
+                                    168 SNAPDUMP DCB   DSORG=PS,                                               X
+                                                       MACRF=(W),                                              X
+i                                                       DEVD=VPWRKD,                                            X
+         ADD2-TEST SNAP IN Z/OS 2.04                                                                           Page    6
+  Active Usings: ADD2+X'6',R12
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2021/11/22 09.08
+                                                       DDNAME=SNAPDUMP,                                        X
+                                                       RECFM=VBA,                                              X
+                                                       LRECL=125,                                              X
+                                                       BLKSIZE=882
+** ASMA254I *** MNOTE ***           171+     8,***  IHB060  VPWRKD INVALID CODE FOR DEVD WITH DSORG=PS-IGNORED  03-IHBER
+                                    173+*                       DATA CONTROL BLOCK
+                                    174+*
+00014C                              175+SNAPDUMP DC    0F'0'          ORIGIN ON WORD BOUNDARY                   01-DCB
+                                    176+*                       DIRECT ACCESS DEVICE INTERFACE
+00014C 0000000000000000             177+         DC    BL16'0'        FDAD, DVTBL                               01-DCB
+000154 0000000000000000
+00015C 00000000                     178+         DC    A(0)           KEYLEN, DEVT, TRBAL                       01-DCB
+                                    179+*                       COMMON ACCESS METHOD INTERFACE
+000160 00                           180+         DC    AL1(0)         BUFNO, NUMBER OF BUFFERS                  01-DCB
+000161 000001                       181+         DC    AL3(1)         BUFCB, BUFFER POOL CONTROL BLOCK          01-DCB
+000164 0000                         182+         DC    AL2(0)         BUFL, BUFFER LENGTH                       01-DCB
+000166 4000                         183+         DC    BL2'0100000000000000' DSORG, DATA SET ORGANIZATION       01-DCB
+000168 00000001                     184+         DC    A(1)           IOBAD FOR EXCP OR RESERVED                01-DCB
+                                    185+*                       FOUNDATION EXTENSION
+00016C 00                           186+         DC    BL1'00000000'  BFTEK, BFALN, DCBE INDICATORS             01-DCB
+00016D 000001                       187+         DC    AL3(1)         EODAD (END OF DATA ROUTINE ADDRESS)       01-DCB
+000170 54                           188+         DC    BL1'01010100'  RECFM (RECORD FORMAT)                     01-DCB
+000171 000000                       189+         DC    AL3(0)         EXLST (EXIT LIST ADDRESS)                 01-DCB
+                                    190+*                       FOUNDATION BLOCK
+000174 E2D5C1D7C4E4D4D7             191+         DC    CL8'SNAPDUMP'  DDNAME                                    01-DCB
+00017C 02                           192+         DC    BL1'00000010'  OFLGS (OPEN FLAGS)                        01-DCB
+00017D 00                           193+         DC    BL1'00000000'  IFLGS (IOS FLAGS)                         01-DCB
+00017E 0020                         194+         DC    BL2'0000000000100000' MACR (MACRO FORMAT)                01-DCB
+                                    195+*                       BSAM-BPAM-QSAM INTERFACE
+000180 00                           196+         DC    BL1'00000000'  OPTCD, OPTION CODES                       01-DCB
+000181 000001                       197+         DC    AL3(1)         CHECK OR INTERNAL QSAM SYNCHRONIZING RTN. 01-DCB
+000184 00000001                     198+         DC    A(1)           SYNAD, SYNCHRONOUS ERROR RTN. (3 BYTES)   01-DCB
+000188 0000                         199+         DC    H'0'           INTERNAL ACCESS METHOD FLAGS              01-DCB
+00018A 0372                         200+         DC    AL2(882)       BLKSIZE, BLOCK SIZE                       01-DCB
+00018C 00000000                     201+         DC    F'0'           INTERNAL ACCESS METHOD FLAGS              01-DCB
+000190 00000001                     202+         DC    A(1)           INTERNAL ACCESS METHOD USE                01-DCB
+                                    203+*                         BSAM-BPAM INTERFACE
+000194 00                           204+         DC    AL1(0)         NCP, MAX NUM OF OUTSTANDING READ/WRITES   01-DCB
+000195 000001                       205+         DC    AL3(1)         EOBR, INTERNAL ACCESS METHOD USE          01-DCB
+000198 00000001                     206+         DC    A(1)           EOBW, INTERNAL ACCESS METHOD USE          01-DCB
+00019C 0000                         207+         DC    AL1(0,0)       FLAGS AND EITHER DIRCT OR BUFOFF          01-DCB
+00019E 007D                         208+         DC    AL2(125)       LRECL                                     01-DCB
+0001A0 00000001                     209+         DC    A(1)           CNTRL, NOTE, POINT                        01-DCB
+0001A4 00000004                     212 WORD1    DC    F'4'
+0001A8 00000006                     213 WORD2    DC    F'6'
+                      001AC         215 BEG1     EQU   *
+0001AC                              216 WORD3    DS    F
+                      001B0         217 END1     EQU   *
+0001B0 1C                           219 HDR1     DC    AL1(L'HDR1TXT)
+i0001B1 4C4C4C40E6D6D9C4             220 HDR1TXT  DC    C'<<< WORD3...END1 STORAGE >>>'
+         ADD2-TEST SNAP IN Z/OS 2.04                                                                           Page    7
+  Active Usings: ADD2+X'6',R12
+  Loc  Object Code    Addr1 Addr2  Stmt   Source Statement                                  HLASM R6.0  2021/11/22 09.08
+0001B9 F34B4B4BC5D5C4F1
+0001C1 40E2E3D6D9C1C7C5
+0001C9 406E6E6E
+0001CD 2C                           222 HDR2     DC    AL1(L'HDR2TXT)
+0001CE 4C4C4C40C6E4D3D3             223 HDR2TXT  DC    C'<<< FULL PROGRAM STORAGE WORD3...LASTFLD >>>'
+0001D6 40D7D9D6C7D9C1D4
+0001DE 40E2E3D6D9C1C7C5
+0001E6 40E6D6D9C4F34B4B
+0001EE 4BD3C1E2E3C6D3C4
+0001F6 406E6E6E
+0001FA                              225 LASTFLD  DS    CL4
+000200                              227           LTORG *
+000000                              228          END   ADD2
+»
+                                                 Relocation Dictionary                                         Page    8
+   Pos.Id   Rel.Id   Address  Type    Length  Action                                        HLASM R6.0  2021/11/22 09.08
+  00000001 00000001 00000045   A         3       +
+  00000001 00000001 0000006C   A         4       +
+  00000001 00000001 00000070   A         4       +
+  00000001 00000001 00000074   A         4       +
+  00000001 00000001 00000078   A         4       +
+  00000001 00000001 0000007C   A         4       +
+  00000001 00000001 000000A8   A         4       +
+  00000001 00000001 000000AC   A         4       +
+  00000001 00000001 000000B0   A         4       +
+  00000001 00000001 000000B4   A         4       +
+  00000001 00000001 000000B8   A         4       +
+  00000001 00000001 000000D5   A         3       +
+»
+                               Ordinary Symbol and Literal Cross Reference                                     Page    9
+Symbol   Length   Value     Id    R Type Asm  Program   Defn References                     HLASM R6.0  2021/11/22 09.08
+ADD2          1 00000000 00000001     J                    3  108   228
+END1          1 000001B0 00000001     U                  217   61    82
+HDR1          1 000001B0 00000001     R  A               219   83
+HDR1TXT      28 000001B1 00000001     C  C               220  219
+HDR2          1 000001CD 00000001     R  A               222  110
+HDR2TXT      44 000001CE 00000001     C  C               223  222
+IHB0001A      2 00000030 00000001     H  H                19   13B
+IHB0005       2 00000080 00000001     H  H                84   68B
+IHB0007       2 000000BC 00000001     H  H               111   95B
+IHB0011A      2 000000F6 00000001     H  H               138  132B
+LASTFLD       4 000001FA 00000001     C  C               225  109
+R0            1 00000000 00000001 A   U                  150    5B
+R12           1 0000000C 00000001 A   U                  162    4     5M    6U  142M
+R13           1 0000000D 00000001 A   U                  163    4     7     8M  141M  142
+R14           1 0000000E 00000001 A   U                  164    4   142M  144B
+R15           1 0000000F 00000001 A   U                  165  143M
+R3            1 00000003 00000001 A   U                  153   34M   87   114
+R4            1 00000004 00000001 A   U                  154   22M   24M   25
+R5            1 00000005 00000001 A   U                  155   23M   24    60M
+R6            1 00000006 00000001 A   U                  156   61M
+SAVEA         4 00000104 00000001     F  F               146    7M    8   141
+SNAPDUMP      4 0000014C 00000001     F  F               175   32    34   126
+WORD1         4 000001A4 00000001     F  F               212   22
+WORD2         4 000001A8 00000001     F  F               213   23
+WORD3         4 000001AC 00000001     F  F               216   25M   60    81
+»
+                                  Unreferenced Symbols Defined in CSECTs                                       Page   10
+  Defn  Symbol                                                                              HLASM R6.0  2021/11/22 09.08
+   215  BEG1
+   151  R1
+   160  R10
+   161  R11
+   152  R2
+   157  R7
+   158  R8
+   159  R9
+»
+                                          Macro and Copy Code Source Summary                                   Page   11
+ Con Source                                        Volume    Members                        HLASM R6.0  2021/11/22 09.08
+  L1 SYS1.MACLIB                                   VTMVSC    CLOSE    DCB      IHBERMAC IHB01    OPEN     SNAP
+                                                             SYSSTATE WTO      YREGS
+»
+                                                      Using Map                                                Page   12
+                                                                                            HLASM R6.0  2021/11/22 09.08
+  Stmt  -----Location----- Action ----------------Using----------------- Reg Max     Last Label and Using Text
+          Count      Id           Type          Value    Range     Id        Disp    Stmt
+     6  00000006  00000001 USING  ORDINARY    00000006 00001000 00000001  12 001AA    141 *,R12
+»
+                                   General Purpose Register Cross Reference                                    Page   13
+ Register  References (M=modified, B=branch, U=USING, D=DROP, N=index)                      HLASM R6.0  2021/11/22 09.08
+    0(0)       4   142M  143
+    1(1)       4    13M   30M   68M   85    86    87    88    95M  112   113   114   115   124M  132M  142M
+    2(2)       4   142M
+    3(3)       4    34M   87   114   142M
+    4(4)       4    22M   24M   25   142M
+    5(5)       4    23M   24    60M  142M
+    6(6)       4    61M  142M
+    7(7)       4   142M
+    8(8)       4   142M
+    9(9)       4   142M
+   10(A)       4   142M
+   11(B)       4   142M
+   12(C)       4     5M    6U  142M
+   13(D)       4     7     8M  141M  142
+   14(E)       4   142M  144B
+   15(F)       4   142M  143M
+»
+                                  Diagnostic Cross Reference and Assembler Summary                             Page   14
+                                                                                            HLASM R6.0  2021/11/22 09.08
+Statements Flagged
+    171(L1:IHBERMAC,216)
+
+      1 Statement  Flagged in this Assembly        8 was Highest Severity Code
+HIGH LEVEL ASSEMBLER, 5696-234, RELEASE 6.0, PTF UI77556
+SYSTEM: z/OS 02.04.00              JOBNAME: Z01427C     STEPNAME: TESTASM    PROCSTEP: C
+Unicode Module:   ASMA047C   From Page     1148   To Page    17584           ECECP: International 1
+Data Sets Allocated for this Assembly
+ Con DDname   Data Set Name                                Volume  Member
+  P1 SYSIN    Z01427.Z01427C.JOB02244.D0000101.?
+  L1 SYSLIB   SYS1.MACLIB                                  VTMVSC
+     SYSLIN   SYS21326.T090847.RA000.Z01427C.OBJ.H01       VPWRKA
+     SYSPRINT Z01427.Z01427C.JOB02244.D0000102.?
+
+  26884K allocated to Buffer Pool       Storage required     864K
+     92 Primary Input Records Read         7704 Library Records Read                  0 Work File Reads
+      0 ASMAOPT Records Read                399 Primary Print Records Written         0 Work File Writes
+     12 Object Records Written                0 ADATA Records Written
+Assembly Start Time: 09.08.48 Stop Time: 09.08.48 Processor Time: 00.00.00.0057
+Return Code 008
