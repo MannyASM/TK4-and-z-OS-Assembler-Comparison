@@ -41,8 +41,13 @@ YREGS MACRO
 -----------
 TK4_ASMF_YREGS_MACRO.TXT and zOS_2.04_HLASM_SNAP_YREGS_MACRO.txt
 
+
 SUMMARY
 -------         
-TK4 - System/360, Proc:ASMFCLG, Assembler:IFOX00, Language:AssemblerF, Program:ADD2 (via Sysin), Notable:SNAP-WTO-DCB,YREGS 
+TK4 
+---
+System/360, Proc:ASMFCLG, Assembler:IFOX00, Language:AssemblerF, Program:ADD2 (via Sysin), Notable:SNAP-WTO-DCB,YREGS 
 
-z/OS - z/OS 2.04, Proc:ASMACLG, Assembler:ASMA90, Language:HLASM R6.0, Program:ADD2 (via Sysin), Notable:SNAP-WTO-DCB,YREGS
+z/OS 
+----
+z/OS 2.04, Proc:ASMACLG, Assembler:ASMA90, Language:HLASM R6.0, Program:ADD2 (via Sysin), Notable:SNAP-WTO-DCB,YREGS
