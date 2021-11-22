@@ -1,5 +1,5 @@
 # TK4 and z/OS Assembler Comparison
-This looks at backward compatibility between the current HLASM running in z/OS 2.04 and its far-distant predecessor, Assembler F running in the amazing TK4 emulator environment.
+This looks at backward compatibility between the current HLASM running in z/OS 2.04 and its far-distant predecessor, Assembler F running in a TK4 environment.
 
 GOAL
 
@@ -11,7 +11,7 @@ Attempt to run the exact same code in TK4 and z/OS. Utilize SNAP command to dump
 
 HIGH LEVEL PROCESS
 
-The program was submitted via the SYSIN card within the JCL. Most of the program comes directly from the original ASSIST teaching manual (Assembler Language with Assist - 1976). Two numbers are added and the result is stored in a storage location named WORD3. To investigate storage, the SNAP command is used. 
+The program was submitted via the SYSIN (see JCL modules). It is a very simple program, and it originates from the ASSIST teaching manual (Assembler Language with Assist - 1976). Basically, two numbers are added and the result is stored in a storage location named WORD3. To investigate storage, the SNAP command is used. 
 
 MODULES
 
