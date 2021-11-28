@@ -1,4 +1,4 @@
-# TK4 and z/OS Assembler Comparison (HLASM)
+# TK4 and z/OS Assembler Comparison-HLASM
 This looks at backward compatibility between the current HLASM running in z/OS 2.04 and its far-distant predecessor, Assembler F running in a TK4 environment.
 
 GOAL
